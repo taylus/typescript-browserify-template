@@ -1,27 +1,28 @@
 import { Surface } from "./surface";
 
-const width = 64;
-const height = 32;
-const scaleFactor = 6;
+const width = 32;
+const height = 16;
+const scaleFactor = 24;
 
 document.addEventListener("DOMContentLoaded", function () {
     let screen = new Surface(width, height, "screen");
     document.body.appendChild(screen.canvas);
     screen.scale(scaleFactor);
-
-    //fill the screen with random coAlors
-    for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-            screen.putPixel(getRandomColor(), x, y);
-        }
-    }
+    let screenBounds = screen.canvas.getBoundingClientRect()
+    screen.canvas.addEventListener("mousemove", (event) => paint(event, screen, screenBounds));
+    screen.canvas.addEventListener("mousedown", (event) => paint(event, screen, screenBounds));
 });
 
-function getRandomColor(): string {
-    let letters = "0123456789abcdef";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+function paint(event: MouseEvent, surface: Surface, surfaceBounds: ClientRect) {
+    if (event.buttons != 1) return;
+    let coords = clientToCanvasCoordinates(surfaceBounds, event.clientX, event.clientY);
+    surface.putPixel("black", coords.x, coords.y);
+}
+
+//https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
+function clientToCanvasCoordinates(bounds: ClientRect, x: number, y: number) {
+    return {
+        x: Math.floor((x - bounds.left) / scaleFactor),
+        y: Math.floor((y - bounds.top) / scaleFactor)
     }
-    return color;
 }
