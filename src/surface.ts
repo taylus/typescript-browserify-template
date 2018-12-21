@@ -5,7 +5,7 @@ export class Surface {
     readonly canvas: HTMLCanvasElement;
     readonly context: CanvasRenderingContext2D;
     
-    constructor(width, height, canvasId) {
+    constructor(width: number, height: number, canvasId?: string) {
       this.canvas = document.createElement("canvas");
       this.canvas.width = width;
       this.canvas.height = height;
@@ -29,7 +29,19 @@ export class Surface {
      * @param y The y coordinate of the pixel to draw.
      */
     putPixel(color: string, x: number, y: number) {
+      this.fillRect(color, x, y, 1, 1);
+    }
+
+    fillRect(color: string, x: number, y: number, width: number, height: number) {
       this.context.fillStyle = color;
-      this.context.fillRect(x, y, 1, 1);
+      this.context.fillRect(x, y, width, height);
+    }
+
+    getPixel(x: number, y: number) : string {
+      return Surface.toRgba(this.context.getImageData(x, y, 1, 1).data);
+    }
+
+    static toRgba(color: Uint8ClampedArray) : string {
+      return "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", " + color[3] / 255 + ")";
     }
   }

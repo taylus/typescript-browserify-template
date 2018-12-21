@@ -1,8 +1,13 @@
-#screen {
+canvas {
     border: 1px solid gray;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     -ms-interpolation-mode: nearest-neighbor;
+}
+
+#palette {
+    margin-left: 8px;
+    vertical-align: top;
 }
