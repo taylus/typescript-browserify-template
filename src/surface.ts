@@ -4,6 +4,10 @@
 export class Surface {
     readonly canvas: HTMLCanvasElement;
     readonly context: CanvasRenderingContext2D;
+    private scaleFactor: number = 1;
+    private get boundingRect(): ClientRect | DOMRect {
+      return this.canvas.getBoundingClientRect();
+    }
     
     constructor(width: number, height: number, canvasId?: string) {
       this.canvas = document.createElement("canvas");
@@ -18,6 +22,7 @@ export class Surface {
      * @param scale The amount by which to scale the canvas.
      */
     scale(scale: number) {
+      this.scaleFactor = scale;
       this.canvas.style.width = this.canvas.width * scale + "px";
       this.canvas.style.height = this.canvas.height * scale + "px";
     }
@@ -43,5 +48,13 @@ export class Surface {
 
     static toRgba(color: Uint8ClampedArray) : string {
       return "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", " + color[3] / 255 + ")";
+    }
+
+    //https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
+    clientToCanvasCoordinates(x: number, y: number) {
+      return {
+          x: Math.floor((x - this.boundingRect.left) / this.scaleFactor),
+          y: Math.floor((y - this.boundingRect.top) / this.scaleFactor)
+      }
     }
   }
